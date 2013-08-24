@@ -1,8 +1,14 @@
-var player, walk, map, viewport, bushes;
-
 var Game = function () {
 
-    function move(x, y) {
+    var player, walk, map, viewport, bushes;
+
+    function Player(options) {
+        jaws.Sprite.call(this, options);
+        this.speed = 1;
+    }
+    inherits(Player, jaws.Sprite);
+
+    Player.prototype.move = function (x, y) {
         this.x += x;
         this.y += y;
         this.walking = true;
@@ -15,7 +21,33 @@ var Game = function () {
             this.x -= x;
             this.y -= y;
         }
+    };
+
+    Player.prototype.interact = function () {
+        bushes.forEach(function (bush) {
+            if (nextTo(player, bush, 1)) {
+                if (bush.berries) { bush.takeBerry(); }
+            }
+        });
+    };
+
+    function Bush(options) {
+        jaws.Sprite.call(this, options);
+        this.berries = 5;
+        this.setImage(this.sheet.frames[0]);
     }
+    inherits(Bush, jaws.Sprite);
+
+    Bush.prototype.takeBerry = function () {
+        if (this.berries) {
+            this.berries -= 1;
+        }
+        this.setImage(this.sheet.frames[5 - this.berries]);
+    };
+    Bush.prototype.sheet = new jaws.SpriteSheet({
+        image: 'berry_bush.png',
+        frame_size: [8, 8]
+    });
 
     function nextTo(obj1, obj2, distance) {
         var larger_rect = obj1.rect();
@@ -24,25 +56,10 @@ var Game = function () {
         return jaws.collideRects(larger_rect, obj2.rect());
     }
 
-    function interact() {
-        bushes.forEach(function (bush) {
-            if (nextTo(player, bush, 1)) {
-                if (bush.berries) { bush.takeBerry(); }
-            }
-        });
-    }
-
-    function takeBerry() {
-        if (this.berries) {
-            this.berries -= 1;
-        }
-        this.setImage(bush_sheet.frames[5 - this.berries]);
-    }
-
     function isWater(tiles) {
-       return tiles.some(function (tile) {
-           return tile.id == 7; 
-       });
+        return tiles.some(function (tile) {
+            return tile.id == 7;
+        });
     }
 
     this.setup = function () {
@@ -58,22 +75,12 @@ var Game = function () {
             frame_size: [8, 8],
             frame_duration: 60
         });
-        bush_sheet = new jaws.SpriteSheet({
-            image: 'berry_bush.png',
-            frame_size: [8, 8]
-        });
 
-        player = new jaws.Sprite({ x: 100, y: 75, width: 4, height: 4 });
+        player = new Player({ x: 100, y: 75, width: 4, height: 4 });
         player.anim = walk;
-        player.speed = 1;
-        player.move = move;
-        player.interact = interact;
 
         bushes = new jaws.SpriteList();
-        var bush = new jaws.Sprite({ width: 8, height: 8, x: 150, y: 90 });
-        bush.setImage(bush_sheet.frames[0]);
-        bush.berries = 5;
-        bush.takeBerry = takeBerry;
+        var bush = new Bush({ width: 8, height: 8, x: 150, y: 90 });
         bushes.push(bush);
 
         viewport = new jaws.Viewport({ max_x: map.width, max_y: map.height });
