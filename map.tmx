@@ -35,9 +35,21 @@
   <tile id="31" terrain="1,1,2,2"/>
   <tile id="32" terrain="1,2,2,2"/>
  </tileset>
+ <tileset firstgid="55" name="berry_bush" tilewidth="8" tileheight="8">
+  <image source="berry_bush.png" width="48" height="8"/>
+ </tileset>
  <layer name="Tile Layer 1" width="40" height="40">
   <data encoding="base64" compression="zlib">
    eJztlssKwjAQRaNVrIoPUCu+sC7UhbpQ///fnEAGh5DEJp2mIFmcTRvaw0zmJrkQIk+w0QOmHvQju82AuWIBLC2s1JpJJEfqhl4HYGthTzxjOI6ATLm5vEye0nEQoYZDYOPhhuwi+h2BtcHhDFyAa8t+tv7egDvwsPjJPdjkbON82Pr7BF7AW3teACfxnXkKda7rOlTf9N1/OMc0c1yuoZ7oJ/dfKcx7sKrrL88QR8wX/A6HJ8Lp2CVkNT11Xw5Hk6/0DMlFkyd15MokVy7WceQ6F0Nn23XecNYQZ4ezhjjjnD3GueZwxBpy9ZjmD4cjd49NGVkGeupnIufdAjOH5rivI60dtx/1pP+oUstCrdPvE03dzfRaujwLbR3SAcYN+bl6Xmq05WbypOe37kPfx3Sr4tu2TyKRSCQSif/gA9cBTCQ=
   </data>
  </layer>
+ <objectgroup name="Object Layer 1" width="40" height="40">
+  <object name="bush" type="bush" gid="55" x="112" y="56"/>
+  <object name="bush" type="bush" gid="55" x="64" y="56"/>
+  <object name="bush" type="bush" gid="55" x="112" y="96"/>
+  <object name="bush" type="bush" gid="55" x="64" y="88"/>
+  <object name="bush" type="bush" gid="55" x="112" y="128"/>
+  <object name="bush" type="bush" gid="55" x="152" y="112"/>
+  <object name="bush" type="bush" gid="55" x="152" y="152"/>
+ </objectgroup>
 </map>

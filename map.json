@@ -10,6 +10,115 @@
          "width":40,
          "x":0,
          "y":0
+        }, 
+        {
+         "height":40,
+         "name":"Object Layer 1",
+         "objects":[
+                {
+                 "gid":55,
+                 "height":0,
+                 "name":"bush",
+                 "properties":
+                    {
+
+                    },
+                 "type":"bush",
+                 "visible":true,
+                 "width":0,
+                 "x":112,
+                 "y":56
+                }, 
+                {
+                 "gid":55,
+                 "height":0,
+                 "name":"bush",
+                 "properties":
+                    {
+
+                    },
+                 "type":"bush",
+                 "visible":true,
+                 "width":0,
+                 "x":64,
+                 "y":56
+                }, 
+                {
+                 "gid":55,
+                 "height":0,
+                 "name":"bush",
+                 "properties":
+                    {
+
+                    },
+                 "type":"bush",
+                 "visible":true,
+                 "width":0,
+                 "x":112,
+                 "y":96
+                }, 
+                {
+                 "gid":55,
+                 "height":0,
+                 "name":"bush",
+                 "properties":
+                    {
+
+                    },
+                 "type":"bush",
+                 "visible":true,
+                 "width":0,
+                 "x":64,
+                 "y":88
+                }, 
+                {
+                 "gid":55,
+                 "height":0,
+                 "name":"bush",
+                 "properties":
+                    {
+
+                    },
+                 "type":"bush",
+                 "visible":true,
+                 "width":0,
+                 "x":112,
+                 "y":128
+                }, 
+                {
+                 "gid":55,
+                 "height":0,
+                 "name":"bush",
+                 "properties":
+                    {
+
+                    },
+                 "type":"bush",
+                 "visible":true,
+                 "width":0,
+                 "x":152,
+                 "y":112
+                }, 
+                {
+                 "gid":55,
+                 "height":0,
+                 "name":"bush",
+                 "properties":
+                    {
+
+                    },
+                 "type":"bush",
+                 "visible":true,
+                 "width":0,
+                 "x":152,
+                 "y":152
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":40,
+         "x":0,
+         "y":0
         }],
  "orientation":"orthogonal",
  "properties":
@@ -155,6 +264,21 @@
                  "terrain":[0, 2, 0, 0]
                 }
             },
+         "tilewidth":8
+        }, 
+        {
+         "firstgid":55,
+         "image":"berry_bush.png",
+         "imageheight":8,
+         "imagewidth":48,
+         "margin":0,
+         "name":"berry_bush",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":8,
          "tilewidth":8
         }],
  "tilewidth":8,
