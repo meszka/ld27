@@ -1,7 +1,7 @@
 var Setup = function () {
     this.setup = function () {
-        jaws.canvas.width = jaws.canvas.width * 4;
-        jaws.canvas.height = jaws.canvas.height * 4;
+        jaws.width = jaws.canvas.width / 4;
+        jaws.height = jaws.canvas.height / 4;
         jaws.context.scale(4, 4);
         jaws.useCrispScaling();
         jaws.switchGameState(Game);
