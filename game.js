@@ -1,10 +1,12 @@
+var fps = 30;
+
 var Setup = function () {
     this.setup = function () {
         jaws.width = jaws.canvas.width / 4;
         jaws.height = jaws.canvas.height / 4;
         jaws.context.scale(4, 4);
         jaws.useCrispScaling();
-        jaws.switchGameState(Game);
+        jaws.switchGameState(Game, { fps: fps });
     };
 };
 
@@ -16,7 +18,7 @@ var Game = function () {
 
     function Player(options) {
         jaws.Sprite.call(this, options);
-        this.speed = 1;
+        this.speed = 2;
         this.hunger = 0;
     }
     inherits(Player, jaws.Sprite);
@@ -56,7 +58,7 @@ var Game = function () {
     Player.prototype.interact = function () {
         var that = this;
         objects.forEach(function (object) {
-            if (nextTo(that, object, 1)) {
+            if (nextTo(that, object, 2)) {
                 if (typeof object.interact === 'function') {
                     object.interact();
                 }
@@ -135,6 +137,13 @@ var Game = function () {
         }
     };
 
+    function Rock(options) {
+        jaws.Sprite.call(this, options);
+        this.setImage('rock.png');
+        this.blocking = true;
+    }
+    inherits(Rock, jaws.Sprite);
+
     function Hole(options) {
         jaws.Sprite.call(this, options);
         this.setImage(this.sheet.frames[0]);
@@ -176,17 +185,18 @@ var Game = function () {
         if (this.holes) {
             if (!inventory.wood && !inventory.hammer) {
                 message('Maybe a little wood could fix it...');
-                return
+                return;
             }
             if (!inventory.wood) {
                 message('Need more wood!');
-                return
+                return;
             }
             if (inventory.wood && !inventory.hammer) {
                 message('You need a tool to fix this...');
                 return;
             }
             this.holes--;
+            this.setImage(this.sheet.frames[3 - this.holes]);
             unget('wood');
             if (this.holes) {
                 message('You fixed a hole in the boat!');
@@ -237,6 +247,9 @@ var Game = function () {
             if (object.type == 'tree') {
                 var object = new Tree({ x: object.x, y: object.y });
             }
+            if (object.type == 'rock') {
+                var object = new Rock({ x: object.x, y: object.y });
+            }
             if (object.type == 'hole') {
                 var object = new Hole({ x: object.x, y: object.y });
             }
@@ -278,7 +291,7 @@ var Game = function () {
     }
 
     function nextToTiles(object) {
-        var larger_rect = expandedRect(object.rect(), 1);
+        var larger_rect = expandedRect(object.rect(), 2);
         return map.atRect(larger_rect); 
     }
 
@@ -296,7 +309,7 @@ var Game = function () {
             // }
 
             if (fish_limit <= 0) {
-                message("I think that's enough fish for today.");
+                message("I think that's enough fish for today");
                 return;
             }
 
@@ -328,7 +341,7 @@ var Game = function () {
 
     function sleep() {
         sleeping = true;
-        time = 3 * 1000;
+        time = 2 * 1000;
     }
 
     function die(reason) {
@@ -348,7 +361,6 @@ var Game = function () {
         } else {
             win_sprite.setImage(win_sheet.frames[0]);
         }
-        console.log(win_sprite);
     }
 
     function get(item_name) {
@@ -445,30 +457,35 @@ var Game = function () {
 
     this.update = function () {
         if (sleeping) {
-            time -= jaws.game_loop.tick_duration;
+            // time -= jaws.game_loop.tick_duration;
+            time -= 1000 / fps;
             if (time <= 0) {
                 days++;
                 newDay();
             }
         } else if (dead || won) {
             if (jaws.pressedWithoutRepeat('r')) {
-                jaws.switchGameState(Game);
+                jaws.switchGameState(Game, { fps: fps });
             }
         } else {
             player.walking = false;
-            if (jaws.pressed('left'))  { player.move(-1, 0); }
-            if (jaws.pressed('right')) { player.move(1, 0); }
-            if (jaws.pressed('up'))    { player.move(0, -1); }
-            if (jaws.pressed('down'))  { player.move(0, 1); }
+            // var d = jaws.game_loop.tick_duration / 10 * player.speed;
+            var d = player.speed;
+            if (jaws.pressed('left'))  { player.move(-d, 0); }
+            if (jaws.pressed('right')) { player.move(d, 0); }
+            if (jaws.pressed('up'))    { player.move(0, -d); }
+            if (jaws.pressed('down'))  { player.move(0, d); }
             if (jaws.pressedWithoutRepeat('z') || jaws.pressedWithoutRepeat('x')) {
                 player.interact();
             }
 
-            time -= jaws.game_loop.tick_duration;
-            message_time -= jaws.game_loop.tick_duration;
+            // time -= jaws.game_loop.tick_duration;
+            time -= 1000 / fps;
+            // message_time -= jaws.game_loop.tick_duration;
+            message_time -= 1000 / fps;
             if (message_time < 0) { message_time = 0; }
             if (time <= 0) {
-                if (player.hunger <= 0 && nextTo(player, door, 1)) {
+                if (player.hunger <= 0 && nextTo(player, door, 2)) {
                     sleep();
                 } else {
                     if (player.hunger > 0) {
@@ -494,9 +511,9 @@ var Game = function () {
             jaws.context.fillStyle = 'rgba(0,0,20,1)';
             jaws.context.fillRect(0, 0, jaws.canvas.width, jaws.canvas.height);
             jaws.context.restore();
-            var days_text = days > 1 ? 'days' : 'day';
+            var days_text = days != 1 ? 'days' : 'day';
             write(death_reason + "\n\nSurvived " + days +
-                  " " + days_text + ".\npress R to restart", 20, 30);
+                  " " + days_text + "\nPress R to restart", 20, 30);
         } else if (won) {
             jaws.context.save();
             jaws.context.fillStyle = '#67a6e7';
@@ -506,9 +523,9 @@ var Game = function () {
             if (inventory.treasure) {
                 "You also found the buried treasure. Sweet!\n"
             }
-            var days_text = days > 1 ? 'days' : 'day';
+            var days_text = days != 1 ? 'days' : 'day';
             write("You're on your way home. Hooray!\n" + treasure_text + "\nSurvived " + (days + 1) +
-                  " " + days_text + ".\npress R to restart", 20, 30);
+                  " " + days_text + "\nPress R to restart", 20, 30);
             win_sprite.draw();
         } else {
             player.setImage(player.anim.frames[0]);
@@ -583,6 +600,7 @@ jaws.onload = function () {
         'hole.png',
         'boat.png',
         'win.png',
+        'rock.png',
         afile('hit'),
         afile('eat'),
         afile('fish'),
@@ -591,7 +609,7 @@ jaws.onload = function () {
 
     var font = new Font();
     font.onload = function () {
-        jaws.start(Setup);
+        jaws.start(Setup, { fps: fps });
     };
     font.fontFamily = 'font04b03';
     font.src = '04B_03__.TTF';
