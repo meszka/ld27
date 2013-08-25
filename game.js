@@ -12,7 +12,7 @@ var Game = function () {
 
     var player, walk, map, viewport, objects, bushes, time, sleeping, dead,
         death_reason, door, days, message_text, message_time, inventory,
-        items, item_sheet, item_image, item_names, inventory_sprites;
+        items, item_sheet, item_images, item_names, inventory_sprites, fish_limit;
 
     function Player(options) {
         jaws.Sprite.call(this, options);
@@ -25,7 +25,7 @@ var Game = function () {
         this.x += x;
         this.y += y;
         this.walking = true;
-        tiles_touched = map.atRect(this.rect());
+        var tiles_touched = map.atRect(this.rect());
         var blocked = false;
         if (isBlocking(tiles_touched)) {
             blocked = true;
@@ -62,6 +62,11 @@ var Game = function () {
                 }
             }
         });
+        var next_to_tiles = nextToTiles(this);
+        var water_tiles = next_to_tiles.filter(isWater);
+        if (water_tiles.length) {
+            goFish(water_tiles);
+        }
     };
 
     function Bush(options) {
@@ -78,6 +83,8 @@ var Game = function () {
     Bush.prototype.interact = function () {
         if (this.berries) {
             player.eat(1);
+            message("Mmm berries");
+            jaws.assets.get(afile('eat')).play();
             this.takeBerry();
         }
     };
@@ -108,11 +115,19 @@ var Game = function () {
         jaws.Sprite.call(this, options);
         this.setImage('tree.png');
         this.blocking = true;
+        this.cuts = 0;
     }
     inherits(Tree, jaws.Sprite);
 
     Tree.prototype.interact = function () {
         if (!this.stump && inventory.axe) {
+            this.cut();
+        }
+    };
+    Tree.prototype.cut = function () {
+        jaws.assets.get(afile('hit')).play();
+        this.cuts++;
+        if (this.cuts >= 3) {
             this.stump = true;
             this.setImage('stump.png');
             this.move(3, 0);
@@ -123,7 +138,7 @@ var Game = function () {
     function Item(options) {
         jaws.Sprite.call(this, options);
         this.type = options.type;
-        this.setImage(item_image[this.type]);
+        this.setImage(item_images[this.type]);
     }
     inherits(Item, jaws.Sprite);
 
@@ -163,28 +178,71 @@ var Game = function () {
         return objects;
     }
 
-    function nextTo(obj1, obj2, distance) {
-        var rect = obj1.rect();
+    function expandedRect(rect, distance) {
         var larger_rect = new jaws.Rect(rect.x, rect.y, rect.width, rect.height);
         larger_rect.move(-distance, -distance);
         larger_rect.resize(distance * 2, distance * 2);
+        return larger_rect;
+    }
+    function nextTo(obj1, obj2, distance) {
+        var larger_rect = expandedRect(obj1.rect(), distance);
         return jaws.collideRects(larger_rect, obj2.rect());
     }
 
     function isBlocking(tiles) {
         var blocking_tiles = [7, 36, 37, 38, 42, 43, 44];
         return tiles.some(function (tile) {
-            // return tile.id == 7;
             return (blocking_tiles.indexOf(tile.id) != -1)
         });
     }
 
+    function isWater(tile) {
+        return tile.id == 7;
+    }
+
+    function nextToTiles(object) {
+        var larger_rect = expandedRect(object.rect(), 1);
+        return map.atRect(larger_rect); 
+    }
+
+    function goFish(tiles) {
+        if (inventory.rod) {
+            if (Math.random() < 0.75) {
+                message("You almost had one...");
+                return;
+            }
+
+            var fished = tiles.some(function (tile) { return tile.fished; });
+            if (fished) {
+                message("The fish aren't biting...");
+                return;
+            }
+
+            if (fish_limit <= 0) {
+                message("I think that's enough fish for today.");
+                return;
+            }
+
+            fish_limit--;
+            player.eat(10); 
+            message("You caught a fish! Yum!");
+            jaws.assets.get(afile('fish')).play();
+            tiles.forEach(function (tile) {
+                tile.fished = true;
+            });
+        }
+    }
+
     function newDay() {
+        message_text = "";
+        message_time = 0;
+
         sleeping = false;
         time = 10 * 1000;
         player.x = 100;
         player.y = 75;
         player.hunger += 10;
+        fish_limit = 3;
 
         bushes.forEach(function (bush) {
             bush.spawnBerries();
@@ -203,7 +261,8 @@ var Game = function () {
 
     function get(item_name) {
         inventory[item_name] = true;
-        inventory_sprites[item_name].setImage(item_image[item_name]);
+        inventory_sprites[item_name].setImage(item_images[item_name]);
+        message(item_messages[item_name]);
     }
 
     function write(text, x, y) {
@@ -232,12 +291,18 @@ var Game = function () {
             image: 'items.png',
             frame_size: [8, 8]
         });
-        item_image = {
+        item_images = {
             rod: item_sheet.frames[0],
             axe: item_sheet.frames[1],
             wood: item_sheet.frames[2],
             hammer: item_sheet.frames[3],
             mystery: item_sheet.frames[7],
+        };
+        item_messages = {
+            rod: "You got a fishing rod!",
+            axe: "You got an axe!",
+            wood: "You got some wood!",
+            hammer: "You got a hammer!",
         };
         item_names = ['rod', 'axe', 'wood', 'hammer'];
 
@@ -250,7 +315,7 @@ var Game = function () {
             inventory_sprites[name] = new jaws.Sprite({
                 x: 130 + x_offset,
                 y: 10,
-                image: item_image.mystery,
+                image: item_images.mystery,
             });
         });
 
@@ -356,16 +421,16 @@ var Game = function () {
             if (player.hunger > 0) {
                 write('Hungry!', 50, 20);
             }
-            if (time < 4 * 1000) {
-                write('Need sleep!', 50, 30);
+            if (time <= 4 * 1000) {
+                message('Go back to your hut!');
             }
             if (message_time) {
                 write(message_text, 20, 140);
             }
 
             var alpha;
-            if (time  < 5000) {
-                alpha = 0.8 - ( ((time) / 1000) / 5 * 0.8 );
+            if (time  <= 4 * 1000) {
+                alpha = 0.8 - ( ((time) / 1000) / 4 * 0.8 );
             } else {
                 alpha = 0;
             }
@@ -388,6 +453,9 @@ jaws.onload = function () {
         'map.json',
         'tiles.png',
         'items.png',
+        afile('hit'),
+        afile('eat'),
+        afile('fish'),
     ]);
 
     var font = new Font();
