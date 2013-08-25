@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="40" height="40" tilewidth="8" tileheight="8">
+<map version="1.0" orientation="orthogonal" width="60" height="40" tilewidth="8" tileheight="8">
  <tileset firstgid="1" name="tiles" tilewidth="8" tileheight="8">
   <image source="tiles.png" width="48" height="72"/>
   <terraintypes>
@@ -53,22 +53,21 @@
  <tileset firstgid="76" name="rock" tilewidth="8" tileheight="8">
   <image source="rock.png" width="8" height="8"/>
  </tileset>
- <layer name="Tile Layer 1" width="40" height="40">
+ <layer name="Tile Layer 1" width="60" height="40">
   <data encoding="base64" compression="zlib">
-   eJztmMtOw0AMRYeXKEUFJEoRlIqwABaFBeX//w2PFEuWGY/tidOA1MXZpcnBvvE4zFJKswNhnAJXDs4Cn6HdK//uGrjpuQWWAnf9NQujI3Wiz6DU7kXd0GsDPAo8Ec+Fob4XghPnXPCbAye9W82r5inVpFYzTw3z3/jgcCt51lytSDXMfs/AfaMjdR3iWPPz9tdST29NS374frT211pTOhMk55Ifvl9j+aHjJv129vjl/HVpeAZbs3oEXBb8cL7gdfv0XCu14zWkjNnv/+Yn9XZKvxXwYnArZRBzOGYG10a3iBq+Am/Au9OvlrlIvy3wAXw6ezvUzzprvoAd8G3w6pI9d5pfdBYxc8dON74/l4h4n72Zs9QuE7XbjOEX5dbqV+ttpBv64d5v/f6r1S76DOHfVhbHffpRT6tjq1+eZUNmDu4GmmPL3MP5j/O7hOY+ZLcq1RBnf9e7ad86Wjasfnl3yfOc7y/8jLM4Wc+cFbufZeaUdiwEzyQN/nteQ3r+0uusM3EuPLd1R+P5lHrQcqa0oGVF6o1nV4jA+j+rKdy0LNM8T+GmZXlqrwN/gx+MF2W7
+   eJztmMtOAzEMRQdaRFvEQ+IlKKhlASyABfD//4ZHqiXX8ivJJNOiLu4GppM5uXZsZ9Z13eygUTUFXRCdNFzLU863eGtcgq6IzivxT9la16AbRbfkWyLrU0bOkyrkL+GmrMj5DHpU9ES4+f5LXsyN74/sq8ady7wATTZrW5wWt+WF5qm33tLx+rTA496DhwRWidvzhHtqsd6BXirzrkD3mcyU3WKOxpDn7RHorJA3NZ4jflPPrff3fq6JanqL51VuPEc9194fid2hY/mqIi8yS95y1j5OjzeaCJz4/9JY7t/V5++6K8/hFNE85Tm5IOyoEk5ej3DdltyUtyRGcz2mqhnfEq/WQ9D+TOsxIs/sGq/UL/N+RevnpGcs7rF4pR5N6zF5XZeeo89Y+cFzGPO41dlFa7ZWo3ldl56j/Y53HpR4/Ap6A7032p9IjtTk/QB9gr5GZqX1PIc3Wpu+QT+g3x1hzeUdI5cjXPxbpJ7UmpH5/YakFud1REth/7V5SvPY8jZljqvp6brbnp1Wwt+G4G3FymdCqtT5yeK1Yrmlr96ML81J0gylzR8Rb1vmbOROg89J0rd7M+MYvFLsWjGreZUzM+bySnUhKu+eK8I65Czo1V2sd/SM5PL2IpqvQ8/FXi1Cj6WaEPndrvFiDmhnHXqYWhOsnizljq7WvYc0E0pnoyX+e+4xxghntepLzXse6bxLuSfjucHz2+uDpD1vea81dG5Ezt95t+35kGdzLXlnoFVrcM/2gZN+s9fr7RtThFk71/4T50EHjaE/gV6VCQ==
   </data>
  </layer>
- <objectgroup name="Object Layer 1" width="40" height="40">
-  <object name="bush" type="bush" gid="55" x="192" y="120"/>
-  <object name="bush" type="bush" gid="55" x="248" y="112"/>
-  <object name="bush" type="bush" gid="55" x="184" y="80"/>
+ <objectgroup name="Object Layer 1" width="60" height="40">
+  <object name="bush" type="bush" gid="55" x="200" y="136"/>
+  <object name="bush" type="bush" gid="55" x="192" y="192"/>
   <object name="bush" type="bush" gid="55" x="120" y="120"/>
   <object name="door" type="door" gid="50" x="160" y="160"/>
   <object name="tree" type="tree" gid="61" x="120" y="72"/>
   <object name="tree" type="tree" gid="61" x="112" y="160"/>
   <object name="axe" type="item" gid="63" x="48" y="48"/>
-  <object name="rod" type="item" gid="62" x="264" y="48"/>
-  <object name="hammer" type="item" gid="65" x="264" y="256"/>
+  <object name="rod" type="item" gid="62" x="336" y="56"/>
+  <object name="hammer" type="item" gid="65" x="320" y="256"/>
   <object name="tree" type="tree" gid="61" x="216" y="240"/>
   <object name="tree" type="tree" gid="61" x="88" y="40"/>
   <object name="tree" type="tree" gid="61" x="240" y="136"/>
@@ -76,8 +75,8 @@
   <object name="tree" type="tree" gid="61" x="56" y="88"/>
   <object name="tree" type="tree" gid="61" x="208" y="104"/>
   <object name="tree" type="tree" gid="61" x="80" y="128"/>
-  <object name="tree" type="tree" gid="61" x="144" y="96"/>
-  <object name="hole" type="hole" gid="70" x="248" y="72"/>
+  <object name="tree" type="tree" gid="61" x="336" y="152"/>
+  <object name="hole" type="hole" gid="70" x="416" y="176"/>
   <object name="shovel" type="item" gid="66" x="48" y="224"/>
   <object name="boat" type="boat" gid="72" x="112" y="264"/>
   <object name="rock" type="rock" gid="76" x="32" y="168"/>
@@ -130,21 +129,20 @@
   <object name="rock" type="rock" gid="76" x="248" y="32"/>
   <object name="rock" type="rock" gid="76" x="264" y="24"/>
   <object name="rock" type="rock" gid="76" x="264" y="32"/>
-  <object name="rock" type="rock" gid="76" x="280" y="32"/>
+  <object name="rock" type="rock" gid="76" x="288" y="24"/>
   <object name="rock" type="rock" gid="76" x="272" y="32"/>
   <object name="rock" type="rock" gid="76" x="272" y="24"/>
   <object name="rock" type="rock" gid="76" x="280" y="24"/>
-  <object name="rock" type="rock" gid="76" x="288" y="32"/>
-  <object name="rock" type="rock" gid="76" x="288" y="48"/>
-  <object name="rock" type="rock" gid="76" x="296" y="56"/>
-  <object name="rock" type="rock" gid="76" x="288" y="56"/>
-  <object name="rock" type="rock" gid="76" x="288" y="64"/>
-  <object name="rock" type="rock" gid="76" x="296" y="64"/>
-  <object name="rock" type="rock" gid="76" x="296" y="48"/>
-  <object name="rock" type="rock" gid="76" x="288" y="40"/>
-  <object name="rock" type="rock" gid="76" x="280" y="40"/>
-  <object name="rock" type="rock" gid="76" x="288" y="72"/>
-  <object name="rock" type="rock" gid="76" x="280" y="128"/>
+  <object name="rock" type="rock" gid="76" x="296" y="16"/>
+  <object name="rock" type="rock" gid="76" x="328" y="16"/>
+  <object name="rock" type="rock" gid="76" x="336" y="24"/>
+  <object name="rock" type="rock" gid="76" x="304" y="88"/>
+  <object name="rock" type="rock" gid="76" x="312" y="88"/>
+  <object name="rock" type="rock" gid="76" x="328" y="24"/>
+  <object name="rock" type="rock" gid="76" x="320" y="16"/>
+  <object name="rock" type="rock" gid="76" x="304" y="16"/>
+  <object name="rock" type="rock" gid="76" x="312" y="16"/>
+  <object name="rock" type="rock" gid="76" x="328" y="96"/>
   <object name="rock" type="rock" gid="76" x="224" y="48"/>
   <object name="rock" type="rock" gid="76" x="224" y="56"/>
   <object name="rock" type="rock" gid="76" x="208" y="32"/>
@@ -194,9 +192,9 @@
   <object name="rock" type="rock" gid="76" x="64" y="256"/>
   <object name="rock" type="rock" gid="76" x="88" y="264"/>
   <object name="rock" type="rock" gid="76" x="72" y="256"/>
-  <object name="rock" type="rock" gid="76" x="296" y="80"/>
-  <object name="rock" type="rock" gid="76" x="288" y="80"/>
-  <object name="rock" type="rock" gid="76" x="296" y="72"/>
+  <object name="rock" type="rock" gid="76" x="336" y="96"/>
+  <object name="rock" type="rock" gid="76" x="344" y="96"/>
+  <object name="rock" type="rock" gid="76" x="320" y="96"/>
   <object name="rock" type="rock" gid="76" x="208" y="48"/>
   <object name="rock" type="rock" gid="76" x="200" y="48"/>
   <object name="rock" type="rock" gid="76" x="192" y="48"/>
@@ -210,21 +208,13 @@
   <object name="rock" type="rock" gid="76" x="296" y="96"/>
   <object name="rock" type="rock" gid="76" x="288" y="104"/>
   <object name="rock" type="rock" gid="76" x="288" y="112"/>
-  <object name="rock" type="rock" gid="76" x="288" y="112"/>
-  <object name="rock" type="rock" gid="76" x="288" y="120"/>
-  <object name="rock" type="rock" gid="76" x="280" y="112"/>
-  <object name="rock" type="rock" gid="76" x="280" y="120"/>
-  <object name="rock" type="rock" gid="76" x="280" y="104"/>
-  <object name="rock" type="rock" gid="76" x="280" y="96"/>
-  <object name="rock" type="rock" gid="76" x="272" y="128"/>
-  <object name="rock" type="rock" gid="76" x="272" y="136"/>
-  <object name="rock" type="rock" gid="76" x="264" y="136"/>
-  <object name="rock" type="rock" gid="76" x="264" y="144"/>
-  <object name="rock" type="rock" gid="76" x="264" y="152"/>
-  <object name="rock" type="rock" gid="76" x="264" y="160"/>
-  <object name="rock" type="rock" gid="76" x="256" y="160"/>
-  <object name="rock" type="rock" gid="76" x="240" y="168"/>
-  <object name="rock" type="rock" gid="76" x="256" y="168"/>
+  <object name="rock" type="rock" gid="76" x="368" y="208"/>
+  <object name="rock" type="rock" gid="76" x="360" y="208"/>
+  <object name="rock" type="rock" gid="76" x="352" y="200"/>
+  <object name="rock" type="rock" gid="76" x="344" y="200"/>
+  <object name="rock" type="rock" gid="76" x="344" y="208"/>
+  <object name="rock" type="rock" gid="76" x="336" y="208"/>
+  <object name="rock" type="rock" gid="76" x="336" y="216"/>
   <object name="rock" type="rock" gid="76" x="168" y="40"/>
   <object name="rock" type="rock" gid="76" x="160" y="40"/>
   <object name="rock" type="rock" gid="76" x="152" y="40"/>
@@ -235,14 +225,13 @@
   <object name="rock" type="rock" gid="76" x="112" y="24"/>
   <object name="rock" type="rock" gid="76" x="104" y="24"/>
   <object name="rock" type="rock" gid="76" x="96" y="24"/>
-  <object name="rock" type="rock" gid="76" x="248" y="168"/>
-  <object name="rock" type="rock" gid="76" x="240" y="176"/>
-  <object name="rock" type="rock" gid="76" x="240" y="184"/>
-  <object name="rock" type="rock" gid="76" x="240" y="192"/>
-  <object name="rock" type="rock" gid="76" x="248" y="200"/>
-  <object name="rock" type="rock" gid="76" x="240" y="200"/>
-  <object name="rock" type="rock" gid="76" x="256" y="200"/>
-  <object name="rock" type="rock" gid="76" x="256" y="208"/>
+  <object name="rock" type="rock" gid="76" x="328" y="216"/>
+  <object name="rock" type="rock" gid="76" x="344" y="224"/>
+  <object name="rock" type="rock" gid="76" x="320" y="216"/>
+  <object name="rock" type="rock" gid="76" x="328" y="224"/>
+  <object name="rock" type="rock" gid="76" x="320" y="224"/>
+  <object name="rock" type="rock" gid="76" x="336" y="224"/>
+  <object name="rock" type="rock" gid="76" x="336" y="232"/>
   <object name="rock" type="rock" gid="76" x="88" y="24"/>
   <object name="rock" type="rock" gid="76" x="80" y="24"/>
   <object name="rock" type="rock" gid="76" x="72" y="24"/>
@@ -253,5 +242,112 @@
   <object name="rock" type="rock" gid="76" x="32" y="24"/>
   <object name="rock" type="rock" gid="76" x="32" y="32"/>
   <object name="rock" type="rock" gid="76" x="24" y="32"/>
+  <object name="rock" type="rock" gid="76" x="296" y="112"/>
+  <object name="rock" type="rock" gid="76" x="296" y="120"/>
+  <object name="rock" type="rock" gid="76" x="384" y="120"/>
+  <object name="rock" type="rock" gid="76" x="392" y="120"/>
+  <object name="rock" type="rock" gid="76" x="328" y="232"/>
+  <object name="rock" type="rock" gid="76" x="376" y="200"/>
+  <object name="rock" type="rock" gid="76" x="368" y="200"/>
+  <object name="rock" type="rock" gid="76" x="376" y="208"/>
+  <object name="rock" type="rock" gid="76" x="360" y="200"/>
+  <object name="rock" type="rock" gid="76" x="352" y="208"/>
+  <object name="rock" type="rock" gid="76" x="352" y="216"/>
+  <object name="rock" type="rock" gid="76" x="344" y="216"/>
+  <object name="rock" type="rock" gid="76" x="288" y="120"/>
+  <object name="rock" type="rock" gid="76" x="384" y="192"/>
+  <object name="rock" type="rock" gid="76" x="392" y="208"/>
+  <object name="rock" type="rock" gid="76" x="384" y="200"/>
+  <object name="rock" type="rock" gid="76" x="400" y="120"/>
+  <object name="rock" type="rock" gid="76" x="384" y="184"/>
+  <object name="rock" type="rock" gid="76" x="400" y="200"/>
+  <object name="rock" type="rock" gid="76" x="392" y="216"/>
+  <object name="rock" type="rock" gid="76" x="376" y="120"/>
+  <object name="rock" type="rock" gid="76" x="376" y="192"/>
+  <object name="rock" type="rock" gid="76" x="376" y="184"/>
+  <object name="rock" type="rock" gid="76" x="424" y="120"/>
+  <object name="rock" type="rock" gid="76" x="432" y="120"/>
+  <object name="rock" type="rock" gid="76" x="408" y="112"/>
+  <object name="rock" type="rock" gid="76" x="448" y="128"/>
+  <object name="rock" type="rock" gid="76" x="424" y="112"/>
+  <object name="rock" type="rock" gid="76" x="440" y="120"/>
+  <object name="rock" type="rock" gid="76" x="448" y="120"/>
+  <object name="rock" type="rock" gid="76" x="432" y="112"/>
+  <object name="rock" type="rock" gid="76" x="416" y="120"/>
+  <object name="rock" type="rock" gid="76" x="416" y="112"/>
+  <object name="rock" type="rock" gid="76" x="448" y="192"/>
+  <object name="rock" type="rock" gid="76" x="456" y="192"/>
+  <object name="rock" type="rock" gid="76" x="448" y="200"/>
+  <object name="rock" type="rock" gid="76" x="456" y="200"/>
+  <object name="rock" type="rock" gid="76" x="424" y="208"/>
+  <object name="rock" type="rock" gid="76" x="432" y="208"/>
+  <object name="rock" type="rock" gid="76" x="424" y="216"/>
+  <object name="rock" type="rock" gid="76" x="432" y="216"/>
+  <object name="rock" type="rock" gid="76" x="408" y="208"/>
+  <object name="rock" type="rock" gid="76" x="416" y="208"/>
+  <object name="rock" type="rock" gid="76" x="408" y="216"/>
+  <object name="rock" type="rock" gid="76" x="416" y="216"/>
+  <object name="rock" type="rock" gid="76" x="448" y="176"/>
+  <object name="rock" type="rock" gid="76" x="456" y="176"/>
+  <object name="rock" type="rock" gid="76" x="448" y="184"/>
+  <object name="rock" type="rock" gid="76" x="456" y="184"/>
+  <object name="rock" type="rock" gid="76" x="440" y="136"/>
+  <object name="rock" type="rock" gid="76" x="448" y="136"/>
+  <object name="rock" type="rock" gid="76" x="440" y="144"/>
+  <object name="rock" type="rock" gid="76" x="448" y="144"/>
+  <object name="rock" type="rock" gid="76" x="440" y="152"/>
+  <object name="rock" type="rock" gid="76" x="448" y="152"/>
+  <object name="rock" type="rock" gid="76" x="440" y="160"/>
+  <object name="rock" type="rock" gid="76" x="448" y="160"/>
+  <object name="rock" type="rock" gid="76" x="456" y="168"/>
+  <object name="rock" type="rock" gid="76" x="448" y="168"/>
+  <object name="rock" type="rock" gid="76" x="448" y="208"/>
+  <object name="rock" type="rock" gid="76" x="440" y="208"/>
+  <object name="rock" type="rock" gid="76" x="400" y="208"/>
+  <object name="rock" type="rock" gid="76" x="400" y="216"/>
+  <object name="rock" type="rock" gid="76" x="392" y="200"/>
+  <object name="rock" type="rock" gid="76" x="408" y="120"/>
+  <object name="rock" type="rock" gid="76" x="344" y="112"/>
+  <object name="rock" type="rock" gid="76" x="336" y="112"/>
+  <object name="rock" type="rock" gid="76" x="352" y="112"/>
+  <object name="rock" type="rock" gid="76" x="360" y="112"/>
+  <object name="rock" type="rock" gid="76" x="328" y="120"/>
+  <object name="rock" type="rock" gid="76" x="344" y="120"/>
+  <object name="rock" type="rock" gid="76" x="336" y="120"/>
+  <object name="rock" type="rock" gid="76" x="320" y="120"/>
+  <object name="rock" type="rock" gid="76" x="304" y="120"/>
+  <object name="rock" type="rock" gid="76" x="312" y="120"/>
+  <object name="rock" type="rock" gid="76" x="368" y="120"/>
+  <object name="rock" type="rock" gid="76" x="352" y="120"/>
+  <object name="rock" type="rock" gid="76" x="360" y="120"/>
+  <object name="rock" type="rock" gid="76" x="360" y="88"/>
+  <object name="rock" type="rock" gid="76" x="360" y="96"/>
+  <object name="rock" type="rock" gid="76" x="352" y="96"/>
+  <object name="rock" type="rock" gid="76" x="376" y="80"/>
+  <object name="rock" type="rock" gid="76" x="376" y="88"/>
+  <object name="rock" type="rock" gid="76" x="368" y="88"/>
+  <object name="rock" type="rock" gid="76" x="384" y="64"/>
+  <object name="rock" type="rock" gid="76" x="376" y="72"/>
+  <object name="rock" type="rock" gid="76" x="376" y="56"/>
+  <object name="rock" type="rock" gid="76" x="376" y="64"/>
+  <object name="rock" type="rock" gid="76" x="384" y="56"/>
+  <object name="rock" type="rock" gid="76" x="384" y="40"/>
+  <object name="rock" type="rock" gid="76" x="384" y="48"/>
+  <object name="rock" type="rock" gid="76" x="376" y="48"/>
+  <object name="rock" type="rock" gid="76" x="376" y="40"/>
+  <object name="rock" type="rock" gid="76" x="376" y="32"/>
+  <object name="rock" type="rock" gid="76" x="368" y="32"/>
+  <object name="rock" type="rock" gid="76" x="360" y="32"/>
+  <object name="rock" type="rock" gid="76" x="360" y="24"/>
+  <object name="rock" type="rock" gid="76" x="352" y="24"/>
+  <object name="rock" type="rock" gid="76" x="344" y="24"/>
+  <object name="rock" type="rock" gid="76" x="352" y="32"/>
+  <object name="rock" type="rock" gid="76" x="344" y="32"/>
+  <object name="rock" type="rock" gid="76" x="304" y="24"/>
+  <object name="rock" type="rock" gid="76" x="296" y="24"/>
+  <object name="rock" type="rock" gid="76" x="312" y="24"/>
+  <object name="rock" type="rock" gid="76" x="320" y="24"/>
+  <object name="rock" type="rock" gid="76" x="320" y="88"/>
+  <object name="rock" type="rock" gid="76" x="328" y="88"/>
  </objectgroup>
 </map>
