@@ -182,6 +182,20 @@
                  "width":0,
                  "x":128,
                  "y":152
+                }, 
+                {
+                 "gid":63,
+                 "height":0,
+                 "name":"axe",
+                 "properties":
+                    {
+
+                    },
+                 "type":"item",
+                 "visible":true,
+                 "width":0,
+                 "x":128,
+                 "y":120
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -364,6 +378,21 @@
             },
          "spacing":0,
          "tileheight":16,
+         "tilewidth":8
+        }, 
+        {
+         "firstgid":62,
+         "image":"items.png",
+         "imageheight":8,
+         "imagewidth":64,
+         "margin":0,
+         "name":"items",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":8,
          "tilewidth":8
         }],
  "tilewidth":8,

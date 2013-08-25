@@ -11,7 +11,8 @@ var Setup = function () {
 var Game = function () {
 
     var player, walk, map, viewport, objects, bushes, time, sleeping, dead,
-        death_reason, door, days, message_text, message_time;
+        death_reason, door, days, message_text, message_time, inventory,
+        items, item_sheet, item_image, item_names, inventory_sprites;
 
     function Player(options) {
         jaws.Sprite.call(this, options);
@@ -25,19 +26,27 @@ var Game = function () {
         this.y += y;
         this.walking = true;
         tiles_touched = map.atRect(this.rect());
-        var blocked = false
+        var blocked = false;
         if (isBlocking(tiles_touched)) {
             blocked = true;
         }
         var object_collisions = jaws.collideOneWithMany(this, objects);
         var that = this;
-        var blocked = object_collisions.some(function (object) {
-            return object.blocking;
-        });
+        if (!blocked) {
+            blocked = object_collisions.some(function (object) {
+                return object.blocking;
+            });
+        }
         if (blocked) {
             this.x -= x;
             this.y -= y;
         }
+
+        object_collisions.forEach(function (object) {
+            if (object instanceof Item) {
+                object.collect();
+            }
+        });
     };
 
     Player.prototype.eat = function (amount) {
@@ -48,7 +57,6 @@ var Game = function () {
         var that = this;
         objects.forEach(function (object) {
             if (nextTo(that, object, 1)) {
-                console.log('next to', object);
                 if (typeof object.interact === 'function') {
                     object.interact();
                 }
@@ -99,16 +107,35 @@ var Game = function () {
     function Tree(options) {
         jaws.Sprite.call(this, options);
         this.setImage('tree.png');
-        console.log(this.rect());
         this.blocking = true;
     }
     inherits(Tree, jaws.Sprite);
 
     Tree.prototype.interact = function () {
-        if (!this.stump) {
+        if (!this.stump && inventory.axe) {
             this.stump = true;
             this.setImage('stump.png');
+            this.move(3, 0);
+            get('wood');
         }
+    };
+
+    function Item(options) {
+        jaws.Sprite.call(this, options);
+        this.type = options.type;
+        this.setImage(item_image[this.type]);
+    }
+    inherits(Item, jaws.Sprite);
+
+    Item.prototype.draw = function () {
+        if (!this.collected) {
+            jaws.Sprite.prototype.draw.call(this);
+        }
+    };
+
+    Item.prototype.collect = function () {
+        this.collected = true;
+        get(this.type);
     };
 
     function tiledSpawnObjects(data) {
@@ -125,6 +152,10 @@ var Game = function () {
             if (object.type == 'tree') {
                 var object = new Tree({ x: object.x, y: object.y });
             }
+            if (object.type == 'item') {
+                var object = new Item({ x: object.x, y: object.y, type: object.name });
+                items.push(object);
+            }
             object.setAnchor('bottom_left');
             objects.push(object);
         });
@@ -140,7 +171,7 @@ var Game = function () {
     }
 
     function isBlocking(tiles) {
-        var blocking_tiles = [7, 36, 37, 38, 42, 43, 45];
+        var blocking_tiles = [7, 36, 37, 38, 42, 43, 44];
         return tiles.some(function (tile) {
             // return tile.id == 7;
             return (blocking_tiles.indexOf(tile.id) != -1)
@@ -169,6 +200,11 @@ var Game = function () {
         death_reason = reason;
     }
 
+    function get(item_name) {
+        inventory[item_name] = true;
+        inventory_sprites[item_name].setImage(item_image[item_name]);
+    }
+
     function write(text, x, y) {
         jaws.context.save();
         jaws.context.font = '8px font04b03';
@@ -191,8 +227,36 @@ var Game = function () {
     }
 
     this.setup = function () {
+        item_sheet = new jaws.SpriteSheet({
+            image: 'items.png',
+            frame_size: [8, 8]
+        });
+        item_image = {
+            rod: item_sheet.frames[0],
+            axe: item_sheet.frames[1],
+            wood: item_sheet.frames[2],
+            hammer: item_sheet.frames[3],
+            mystery: item_sheet.frames[7],
+        };
+        item_names = ['rod', 'axe', 'wood', 'hammer'];
+
+        inventory = {};
+        inventory_sprites = {};
+
+        var x_offset = 0;
+        item_names.forEach(function (name) {
+            x_offset += 10;
+            inventory_sprites[name] = new jaws.Sprite({
+                x: 130 + x_offset,
+                y: 10,
+                image: item_image.mystery,
+            });
+        });
+        console.log(inventory_sprites);
+
         map = tiledInitMap(jaws.assets.get('map.json'));
         bushes = new jaws.SpriteList();
+        items = new jaws.SpriteList();
         objects = tiledSpawnObjects(jaws.assets.get('map.json'));
 
         walk = new jaws.Animation({
@@ -239,7 +303,11 @@ var Game = function () {
                 if (nextTo(player, door, 1)) {
                     sleep();
                 } else {
-                    die('Killed by the creatures of the night.');
+                    if (player.hunger > 0) {
+                        die('Died of starvation');
+                    } else {
+                        die('Killed by the creatures of the night.');
+                    }
                 }
             }
         }
@@ -258,7 +326,7 @@ var Game = function () {
             jaws.context.fillStyle = 'rgba(0,0,20,1)';
             jaws.context.fillRect(0, 0, jaws.canvas.width, jaws.canvas.height);
             jaws.context.restore();
-            write("Dead...\n" + death_reason + "\npress R to restart", 20, 20);
+            write(death_reason + "\npress R to restart", 20, 20);
         } else {
             player.setImage(player.anim.frames[0]);
             if (player.walking) {
@@ -275,6 +343,9 @@ var Game = function () {
                 player.draw();
                 // player.rect().draw();
             });
+            for (i in inventory_sprites) {
+                inventory_sprites[i].draw();
+            }
 
             jaws.context.fillStyle = 'rgb(255,255,255)';
             write((Math.ceil(time / 1000)), 20, 20);
@@ -312,7 +383,8 @@ jaws.onload = function () {
         'tree.png',
         'stump.png',
         'map.json',
-        'tiles.png'
+        'tiles.png',
+        'items.png',
     ]);
 
     var font = new Font();
