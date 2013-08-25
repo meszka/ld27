@@ -196,6 +196,34 @@
                  "width":0,
                  "x":128,
                  "y":120
+                }, 
+                {
+                 "gid":62,
+                 "height":0,
+                 "name":"rod",
+                 "properties":
+                    {
+
+                    },
+                 "type":"item",
+                 "visible":true,
+                 "width":0,
+                 "x":192,
+                 "y":176
+                }, 
+                {
+                 "gid":65,
+                 "height":0,
+                 "name":"hammer",
+                 "properties":
+                    {
+
+                    },
+                 "type":"item",
+                 "visible":true,
+                 "width":0,
+                 "x":240,
+                 "y":168
                 }],
          "opacity":1,
          "type":"objectgroup",
