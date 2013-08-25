@@ -350,6 +350,34 @@
                  "width":0,
                  "x":240,
                  "y":128
+                }, 
+                {
+                 "gid":70,
+                 "height":0,
+                 "name":"hole",
+                 "properties":
+                    {
+
+                    },
+                 "type":"hole",
+                 "visible":true,
+                 "width":0,
+                 "x":240,
+                 "y":192
+                }, 
+                {
+                 "gid":66,
+                 "height":0,
+                 "name":"shovel",
+                 "properties":
+                    {
+
+                    },
+                 "type":"item",
+                 "visible":true,
+                 "width":0,
+                 "x":216,
+                 "y":200
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -541,6 +569,21 @@
          "imagewidth":64,
          "margin":0,
          "name":"items",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":8,
+         "tilewidth":8
+        }, 
+        {
+         "firstgid":70,
+         "image":"hole.png",
+         "imageheight":8,
+         "imagewidth":16,
+         "margin":0,
+         "name":"hole",
          "properties":
             {
 

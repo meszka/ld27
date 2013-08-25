@@ -44,6 +44,9 @@
  <tileset firstgid="62" name="items" tilewidth="8" tileheight="8">
   <image source="items.png" width="64" height="8"/>
  </tileset>
+ <tileset firstgid="70" name="hole" tilewidth="8" tileheight="8">
+  <image source="hole.png" width="16" height="8"/>
+ </tileset>
  <layer name="Tile Layer 1" width="40" height="40">
   <data encoding="base64" compression="zlib">
    eJztlssKwjAQReMLq+ID1IovrAt1oS7E//83p5DBYUjTJE6jSBaHLhraw0zmJplSKkuI0QUmHvQiu02BmWYOLCpY6jXjSI7UDb32wKaCHfGM4TgEOtrN5mXyLB37EWo4ANYebsg2ot8BWP2wn29/0a/cg03ONs6Hb39z4KjeM0+hzp+6DvQ3ff1wjmnm2FxDPdGv3H+F8t+DPHNsniGOmC/4HQlPRNKxTeh86Ml9JRxNvqVnSC6aPKmjVCaF5mKdo9S5GDrbtryUrCHOjksNT8AZuNTUEGdcssc41zbHK3AD7o41lOoxzR+b40M/n5F7bMrIwqHfJviZKHm3wMyhOR5y32kiZ7gn/YdLLXO9jt8nmrqb8VraPHO2DmkBo4b8bD0vGN9yM3nS85v70Pcx3Vx8v+2TSCQSiUTiP3gBlcZMDA==
@@ -74,5 +77,7 @@
   <object name="tree" type="tree" gid="61" x="224" y="128"/>
   <object name="tree" type="tree" gid="61" x="232" y="128"/>
   <object name="tree" type="tree" gid="61" x="240" y="128"/>
+  <object name="hole" type="hole" gid="70" x="240" y="192"/>
+  <object name="shovel" type="item" gid="66" x="216" y="200"/>
  </objectgroup>
 </map>

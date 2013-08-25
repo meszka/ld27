@@ -135,6 +135,25 @@ var Game = function () {
         }
     };
 
+    function Hole(options) {
+        jaws.Sprite.call(this, options);
+        this.setImage(this.sheet.frames[0]);
+    }
+    inherits(Hole, jaws.Sprite);
+
+    Hole.prototype.sheet = new jaws.SpriteSheet({
+        image: 'hole.png',
+        frame_size: [8, 8],
+    });
+
+    Hole.prototype.interact = function () {
+        if (!this.dug && inventory.shovel) {
+            this.dug = true;
+            this.setImage(this.sheet.frames[1]);
+            get('treasure');
+        }
+    };
+
     function Item(options) {
         jaws.Sprite.call(this, options);
         this.type = options.type;
@@ -166,6 +185,9 @@ var Game = function () {
             }
             if (object.type == 'tree') {
                 var object = new Tree({ x: object.x, y: object.y });
+            }
+            if (object.type == 'hole') {
+                var object = new Hole({ x: object.x, y: object.y });
             }
             if (object.type == 'item') {
                 var object = new Item({ x: object.x, y: object.y, type: object.name });
@@ -263,10 +285,13 @@ var Game = function () {
         inventory[item_name] = true;
         inventory_sprites[item_name].setImage(item_images[item_name]);
         message(item_messages[item_name]);
+        jaws.assets.get(afile('collect')).play();
     }
 
     function write(text, x, y) {
         jaws.context.save();
+        jaws.context.fillStyle = 'white';
+        jaws.context.textBaseline = 'top';
         jaws.context.font = '8px font04b03';
         jaws.context.shadowColor = 'black';
         jaws.context.shadowOffsetX = 4;
@@ -296,15 +321,19 @@ var Game = function () {
             axe: item_sheet.frames[1],
             wood: item_sheet.frames[2],
             hammer: item_sheet.frames[3],
+            shovel: item_sheet.frames[4],
+            treasure: item_sheet.frames[5],
             mystery: item_sheet.frames[7],
         };
         item_messages = {
-            rod: "You got a fishing rod!",
-            axe: "You got an axe!",
-            wood: "You got some wood!",
-            hammer: "You got a hammer!",
+            rod: 'You got a fishing rod!',
+            axe: 'You got an axe!',
+            wood: 'You got some wood!',
+            hammer: 'You got a hammer!',
+            shovel: 'You got a shovel!',
+            treasure: 'You found a treasure chest!',
         };
-        item_names = ['rod', 'axe', 'wood', 'hammer'];
+        item_names = ['rod', 'axe', 'wood', 'hammer', 'shovel', 'treasure'];
 
         inventory = {};
         inventory_sprites = {};
@@ -313,7 +342,7 @@ var Game = function () {
         item_names.forEach(function (name) {
             x_offset += 10;
             inventory_sprites[name] = new jaws.Sprite({
-                x: 130 + x_offset,
+                x: 120 + x_offset,
                 y: 10,
                 image: item_images.mystery,
             });
@@ -359,7 +388,9 @@ var Game = function () {
             if (jaws.pressed('right')) { player.move(1, 0); }
             if (jaws.pressed('up'))    { player.move(0, -1); }
             if (jaws.pressed('down'))  { player.move(0, 1); }
-            if (jaws.pressedWithoutRepeat('z'))  { player.interact(); }
+            if (jaws.pressedWithoutRepeat('z') || jaws.pressedWithoutRepeat('x')) {
+                player.interact();
+            }
 
             time -= jaws.game_loop.tick_duration;
             message_time -= jaws.game_loop.tick_duration;
@@ -391,7 +422,8 @@ var Game = function () {
             jaws.context.fillStyle = 'rgba(0,0,20,1)';
             jaws.context.fillRect(0, 0, jaws.canvas.width, jaws.canvas.height);
             jaws.context.restore();
-            write(death_reason + "\npress R to restart", 20, 20);
+            write(death_reason + "\nSurvived " + days +
+                  " days.\npress R to restart", 20, 10);
         } else {
             player.setImage(player.anim.frames[0]);
             if (player.walking) {
@@ -411,23 +443,6 @@ var Game = function () {
                 player.draw();
                 // player.rect().draw();
             });
-            for (i in inventory_sprites) {
-                inventory_sprites[i].draw();
-            }
-
-            jaws.context.fillStyle = 'rgb(255,255,255)';
-            write((Math.ceil(time / 1000)), 20, 20);
-            write('Day: ' + (days + 1), 100, 20);
-            if (player.hunger > 0) {
-                write('Hungry!', 50, 20);
-            }
-            if (time <= 4 * 1000) {
-                message('Go back to your hut!');
-            }
-            if (message_time) {
-                write(message_text, 20, 140);
-            }
-
             var alpha;
             if (time  <= 4 * 1000) {
                 alpha = 0.8 - ( ((time) / 1000) / 4 * 0.8 );
@@ -439,6 +454,27 @@ var Game = function () {
             jaws.context.fillStyle = 'rgba(0,0,20,' + alpha + ')';
             jaws.context.fillRect(0, 0, jaws.canvas.width, jaws.canvas.height);
             jaws.context.restore();
+
+            write((Math.ceil(time / 1000)), 20, 10);
+            write('Day: ' + (days + 1), 90, 10);
+            if (player.hunger > 0) {
+                write('Hungry!', 40, 10);
+            }
+            if (time <= 4 * 1000) {
+                if (message_time <= 0) {
+                    if (player.hunger <= 0) {
+                        message('Go back to your hut!');
+                    }
+                }
+            }
+            if (message_time) {
+                write(message_text, 20, 140);
+            }
+
+        }
+
+        for (i in inventory_sprites) {
+            inventory_sprites[i].draw();
         }
     };
 
@@ -453,9 +489,11 @@ jaws.onload = function () {
         'map.json',
         'tiles.png',
         'items.png',
+        'hole.png',
         afile('hit'),
         afile('eat'),
         afile('fish'),
+        afile('collect'),
     ]);
 
     var font = new Font();
