@@ -49,7 +49,7 @@ var Game = function () {
     var player, walk, map, viewport, objects, bushes, time, sleeping, dead,
         death_reason, door, days, message_text, message_time, inventory,
         items, item_sheet, item_images, item_names, inventory_sprites, fish_limit,
-        won, win_sprite;
+        won, win_sprite, object_map;
 
     function Player(options) {
         jaws.Sprite.call(this, options);
@@ -92,7 +92,8 @@ var Game = function () {
 
     Player.prototype.interact = function () {
         var that = this;
-        objects.forEach(function (object) {
+        object_map.atRect(expandedRect(this.rect(), 4)).forEach(function (object) {
+        // objects.forEach(function (object) {
             if (nextTo(that, object, 2)) {
                 if (typeof object.interact === 'function') {
                     object.interact();
@@ -298,6 +299,7 @@ var Game = function () {
             }
             object.setAnchor('bottom_left');
             objects.push(object);
+            object_map.push(object);
         });
         objects.sort(function (a, b) { return b.y - a.y; });
         return objects;
@@ -457,6 +459,10 @@ var Game = function () {
         map = tiledInitMap(jaws.assets.get('map.json'));
         bushes = new jaws.SpriteList();
         items = new jaws.SpriteList();
+        object_map = new jaws.TileMap({
+            cell_size: map.cell_size,
+            size: map.size
+        });
         objects = tiledSpawnObjects(jaws.assets.get('map.json'));
 
         walk = new jaws.Animation({
@@ -555,11 +561,17 @@ var Game = function () {
 
             viewport.centerAround(player);
             viewport.apply(function () {
-                map.tiles.draw();
+                var view_rect = new jaws.Rect(viewport.x, viewport.y, jaws.width, jaws.height)
+                map.atRect(view_rect).forEach(function (tile) {
+                    tile.draw();   
+                });
 
-                for (var i = objects.length - 1; i >= 0; i--) {
-                   objects.at(i).draw(); 
-                }
+                object_map.atRect(view_rect).forEach(function (object) {
+                    object.draw();
+                })
+                // for (var i = objects.length - 1; i >= 0; i--) {
+                //    objects.at(i).draw(); 
+                // }
                 // objects.forEach(function (object) {
                 //    object.rect().draw(); 
                 // });
