@@ -332,11 +332,6 @@ var Game = function () {
 
     function goFish(tiles) {
         if (inventory.rod) {
-            if (Math.random() < 0.5) {
-                message("You almost had one...");
-                return;
-            }
-
             // var fished = tiles.some(function (tile) { return tile.fished; });
             // if (fished) {
             //     message("The fish aren't biting...");
@@ -347,6 +342,12 @@ var Game = function () {
                 message("I think that's enough fish for today");
                 return;
             }
+
+            if (Math.random() < 0.5) {
+                message("You almost had one...");
+                return;
+            }
+
 
             fish_limit--;
             player.eat(10); 
