@@ -65,5 +65,14 @@
   <object name="axe" type="item" gid="63" x="128" y="120"/>
   <object name="rod" type="item" gid="62" x="192" y="176"/>
   <object name="hammer" type="item" gid="65" x="240" y="168"/>
+  <object name="tree" type="tree" gid="61" x="224" y="136"/>
+  <object name="tree" type="tree" gid="61" x="232" y="136"/>
+  <object name="tree" type="tree" gid="61" x="240" y="136"/>
+  <object name="tree" type="tree" gid="61" x="240" y="144"/>
+  <object name="tree" type="tree" gid="61" x="224" y="144"/>
+  <object name="tree" type="tree" gid="61" x="232" y="144"/>
+  <object name="tree" type="tree" gid="61" x="224" y="128"/>
+  <object name="tree" type="tree" gid="61" x="232" y="128"/>
+  <object name="tree" type="tree" gid="61" x="240" y="128"/>
  </objectgroup>
 </map>

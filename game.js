@@ -159,6 +159,7 @@ var Game = function () {
             object.setAnchor('bottom_left');
             objects.push(object);
         });
+        objects.sort(function (a, b) { return b.y - a.y; });
         return objects;
     }
 
@@ -252,7 +253,6 @@ var Game = function () {
                 image: item_image.mystery,
             });
         });
-        console.log(inventory_sprites);
 
         map = tiledInitMap(jaws.assets.get('map.json'));
         bushes = new jaws.SpriteList();
@@ -336,7 +336,10 @@ var Game = function () {
             viewport.centerAround(player);
             viewport.apply(function () {
                 map.tiles.draw();
-                objects.draw();
+
+                for (var i = objects.length - 1; i >= 0; i--) {
+                   objects.at(i).draw(); 
+                }
                 // objects.forEach(function (object) {
                 //    object.rect().draw(); 
                 // });

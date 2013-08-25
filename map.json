@@ -224,6 +224,132 @@
                  "width":0,
                  "x":240,
                  "y":168
+                }, 
+                {
+                 "gid":61,
+                 "height":0,
+                 "name":"tree",
+                 "properties":
+                    {
+
+                    },
+                 "type":"tree",
+                 "visible":true,
+                 "width":0,
+                 "x":224,
+                 "y":136
+                }, 
+                {
+                 "gid":61,
+                 "height":0,
+                 "name":"tree",
+                 "properties":
+                    {
+
+                    },
+                 "type":"tree",
+                 "visible":true,
+                 "width":0,
+                 "x":232,
+                 "y":136
+                }, 
+                {
+                 "gid":61,
+                 "height":0,
+                 "name":"tree",
+                 "properties":
+                    {
+
+                    },
+                 "type":"tree",
+                 "visible":true,
+                 "width":0,
+                 "x":240,
+                 "y":136
+                }, 
+                {
+                 "gid":61,
+                 "height":0,
+                 "name":"tree",
+                 "properties":
+                    {
+
+                    },
+                 "type":"tree",
+                 "visible":true,
+                 "width":0,
+                 "x":240,
+                 "y":144
+                }, 
+                {
+                 "gid":61,
+                 "height":0,
+                 "name":"tree",
+                 "properties":
+                    {
+
+                    },
+                 "type":"tree",
+                 "visible":true,
+                 "width":0,
+                 "x":224,
+                 "y":144
+                }, 
+                {
+                 "gid":61,
+                 "height":0,
+                 "name":"tree",
+                 "properties":
+                    {
+
+                    },
+                 "type":"tree",
+                 "visible":true,
+                 "width":0,
+                 "x":232,
+                 "y":144
+                }, 
+                {
+                 "gid":61,
+                 "height":0,
+                 "name":"tree",
+                 "properties":
+                    {
+
+                    },
+                 "type":"tree",
+                 "visible":true,
+                 "width":0,
+                 "x":224,
+                 "y":128
+                }, 
+                {
+                 "gid":61,
+                 "height":0,
+                 "name":"tree",
+                 "properties":
+                    {
+
+                    },
+                 "type":"tree",
+                 "visible":true,
+                 "width":0,
+                 "x":232,
+                 "y":128
+                }, 
+                {
+                 "gid":61,
+                 "height":0,
+                 "name":"tree",
+                 "properties":
+                    {
+
+                    },
+                 "type":"tree",
+                 "visible":true,
+                 "width":0,
+                 "x":240,
+                 "y":128
                 }],
          "opacity":1,
          "type":"objectgroup",
