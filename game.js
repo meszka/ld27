@@ -1,10 +1,22 @@
+var Setup = function () {
+    this.setup = function () {
+        jaws.canvas.width = jaws.canvas.width * 4;
+        jaws.canvas.height = jaws.canvas.height * 4;
+        jaws.context.scale(4, 4);
+        jaws.useCrispScaling();
+        jaws.switchGameState(Game);
+    };
+};
+
 var Game = function () {
 
-    var player, walk, map, viewport, bushes, time;
+    var player, walk, map, viewport, objects, bushes, time, sleeping, dead,
+        death_reason, door, days, message_text, message_time;
 
     function Player(options) {
         jaws.Sprite.call(this, options);
         this.speed = 1;
+        this.hunger = 0;
     }
     inherits(Player, jaws.Sprite);
 
@@ -13,28 +25,30 @@ var Game = function () {
         this.y += y;
         this.walking = true;
         tiles_touched = map.atRect(this.rect());
-        if (isWater(tiles_touched)) {
+        if (isBlocking(tiles_touched)) {
             this.x -= x;
             this.y -= y;
         }
-        if (jaws.collideOneWithMany(this, bushes).length) {
-            this.x -= x;
-            this.y -= y;
-        }
+        var object_collisions = jaws.collideOneWithMany(this, objects);
+        var that = this;
+        object_collisions.forEach(function (object) {
+            if (object.blocking) {
+                that.x -= x;
+                that.y -= y;
+            }
+        });
     };
 
     Player.prototype.eat = function (amount) {
         this.hunger -= amount;
-        if (this.hunger < 0) { this.hunger = 0; }
     }
 
     Player.prototype.interact = function () {
         var that = this;
-        bushes.forEach(function (bush) {
-            if (nextTo(that, bush, 1)) {
-                if (bush.berries) {
-                    bush.takeBerry();
-                    that.eat(1);
+        objects.forEach(function (object) {
+            if (nextTo(that, object, 1)) {
+                if (typeof object.interact === 'function') {
+                    object.interact();
                 }
             }
         });
@@ -42,8 +56,8 @@ var Game = function () {
 
     function Bush(options) {
         jaws.Sprite.call(this, options);
-        this.setAnchor('bottom_left');
         this.spawnBerries();
+        this.blocking = true;
     }
     inherits(Bush, jaws.Sprite);
 
@@ -51,10 +65,14 @@ var Game = function () {
         this.berries = 5;
         this.setImage(this.sheet.frames[0]);
     };
-    Bush.prototype.takeBerry = function () {
+    Bush.prototype.interact = function () {
         if (this.berries) {
-            this.berries -= 1;
+            player.eat(1);
+            this.takeBerry();
         }
+    };
+    Bush.prototype.takeBerry = function () {
+        this.berries -= 1;
         this.setImage(this.sheet.frames[5 - this.berries]);
     };
     Bush.prototype.sheet = new jaws.SpriteSheet({
@@ -62,13 +80,35 @@ var Game = function () {
         frame_size: [8, 8]
     });
 
-    function tiledSpawnBushes(data) {
-        var bushes = new jaws.SpriteList();
+    function Door(options) {
+        jaws.Sprite.call(this, options);
+        this.setImage(map.tile_sheet.frames[49]);
+    }
+    inherits(Door, jaws.Sprite);
+    
+    Door.prototype.interact = function () {
+        if (player.hunger > 0) {
+            message("Can't sleep if hungry!");
+        } else {
+            sleep();
+        }
+    };
+
+    function tiledSpawnObjects(data) {
+        var objects = new jaws.SpriteList();
         data.layers[1].objects.forEach(function (object) {
-            var bush = new Bush({ x: object.x, y: object.y });
-            bushes.push(bush);
+            if (object.type == 'bush') {
+                var object = new Bush({ x: object.x, y: object.y });
+                bushes.push(object);
+            }
+            if (object.type == 'door') {
+                var object = new Door({ x: object.x, y: object.y });
+                door = object;
+            }
+            object.setAnchor('bottom_left');
+            objects.push(object);
         });
-        return bushes;
+        return objects;
     }
 
     function nextTo(obj1, obj2, distance) {
@@ -78,31 +118,61 @@ var Game = function () {
         return jaws.collideRects(larger_rect, obj2.rect());
     }
 
-    function isWater(tiles) {
+    function isBlocking(tiles) {
+        var blocking_tiles = [7, 36, 37, 38, 42, 43, 45];
         return tiles.some(function (tile) {
-            return tile.id == 7;
+            // return tile.id == 7;
+            return (blocking_tiles.indexOf(tile.id) != -1)
         });
     }
 
     function newDay() {
+        sleeping = false;
         time = 10 * 1000;
         player.x = 100;
         player.y = 75;
-        player.hunger = 20;
+        player.hunger += 10;
 
         bushes.forEach(function (bush) {
             bush.spawnBerries();
         });
     }
 
-    this.setup = function () {
-        jaws.canvas.width = jaws.canvas.width * 4;
-        jaws.canvas.height = jaws.canvas.height * 4;
-        jaws.context.scale(4, 4);
-        jaws.useCrispScaling();
+    function sleep() {
+        sleeping = true;
+        time = 3 * 1000;
+    }
 
+    function die(reason) {
+        dead = true;
+        death_reason = reason;
+    }
+
+    function write(text, x, y) {
+        jaws.context.save();
+        jaws.context.font = '8px font04b03';
+        jaws.context.shadowColor = 'black';
+        jaws.context.shadowOffsetX = 4;
+        jaws.context.shadowOffsetY = 4;
+
+        var lines = text.toString().split("\n");
+        var y_offset = 0;
+        lines.forEach(function (line) {
+            jaws.context.fillText(line, x, y + y_offset);
+            y_offset += 10;
+        });
+        jaws.context.restore();
+    }
+
+    function message(text) {
+        message_text = text;
+        message_time = 1500;
+    }
+
+    this.setup = function () {
         map = tiledInitMap(jaws.assets.get('map.json'));
-        bushes = tiledSpawnBushes(jaws.assets.get('map.json'));
+        bushes = new jaws.SpriteList();
+        objects = tiledSpawnObjects(jaws.assets.get('map.json'));
 
         walk = new jaws.Animation({
             sprite_sheet: 'front_walk.png',
@@ -115,45 +185,96 @@ var Game = function () {
 
         viewport = new jaws.Viewport({ max_x: map.width, max_y: map.height });
 
+        days = 0;
+
         newDay();
     };
 
     this.update = function () {
-        player.walking = false;
-        if (jaws.pressed('left'))  { player.move(-1, 0); }
-        if (jaws.pressed('right')) { player.move(1, 0); }
-        if (jaws.pressed('up'))    { player.move(0, -1); }
-        if (jaws.pressed('down'))  { player.move(0, 1); }
-        if (jaws.pressedWithoutRepeat('z'))  { player.interact(); }
+        if (sleeping) {
+            time -= jaws.game_loop.tick_duration;
+            if (time <= 0) {
+                days++;
+                newDay();
+            }
 
-        time -= jaws.game_loop.tick_duration;
-        if (time <= 0) {
-            newDay();
+        } else if (dead) {
+            if (jaws.pressedWithoutRepeat('r')) {
+                jaws.switchGameState(Game);
+            }
+
+        } else {
+            player.walking = false;
+            if (jaws.pressed('left'))  { player.move(-1, 0); }
+            if (jaws.pressed('right')) { player.move(1, 0); }
+            if (jaws.pressed('up'))    { player.move(0, -1); }
+            if (jaws.pressed('down'))  { player.move(0, 1); }
+            if (jaws.pressedWithoutRepeat('z'))  { player.interact(); }
+
+            time -= jaws.game_loop.tick_duration;
+            message_time -= jaws.game_loop.tick_duration;
+            if (message_time < 0) { message_time = 0; }
+            if (time <= 0) {
+                if (nextTo(player, door)) {
+                    sleep();
+                } else {
+                    die('Killed by the creatures of the night.');
+                }
+            }
         }
     };
 
     this.draw = function () {
         jaws.clear();
-        player.setImage(player.anim.frames[0]);
-        if (player.walking) {
-            player.setImage(player.anim.next());
-        }
+        if (sleeping) {
+            jaws.context.save();
+            jaws.context.fillStyle = 'rgba(0,0,20,1)';
+            jaws.context.fillRect(0, 0, jaws.canvas.width, jaws.canvas.height);
+            jaws.context.restore();
+            write('Sleeping...', 20, 20);
+        } else if (dead) {
+            jaws.context.save();
+            jaws.context.fillStyle = 'rgba(0,0,20,1)';
+            jaws.context.fillRect(0, 0, jaws.canvas.width, jaws.canvas.height);
+            jaws.context.restore();
+            write("Dead...\n" + death_reason + "\npress R to restart", 20, 20);
+        } else {
+            player.setImage(player.anim.frames[0]);
+            if (player.walking) {
+                player.setImage(player.anim.next());
+            }
 
-        viewport.centerAround(player);
-        viewport.apply(function () {
-            map.tiles.draw();
-            bushes.draw();
-            player.draw();
-        });
+            viewport.centerAround(player);
+            viewport.apply(function () {
+                map.tiles.draw();
+                objects.draw();
+                player.draw();
+            });
 
-        jaws.context.font = '10px monospace';
-        jaws.context.fillStype = 'rgb(255,255,255)';
-        jaws.context.fillText((Math.ceil(time / 1000)), 20, 20);
-        if (player.hunger > 0) {
-            jaws.context.fillText('Hungry!', 50, 20);
-        }
-        if (time < 4 * 1000) {
-            jaws.context.fillText('Need sleep!', 50, 30);
+            jaws.context.fillStyle = 'rgb(255,255,255)';
+            write((Math.ceil(time / 1000)), 20, 20);
+            write('Day: ' + (days + 1), 100, 20);
+            if (player.hunger > 0) {
+                write('Hungry!', 50, 20);
+            }
+            if (time < 4 * 1000) {
+                write('Need sleep!', 50, 30);
+            }
+            if (message_time) {
+                write(message_text, 20, 140);
+            }
+
+            var alpha;
+            if (time  < 5000) {
+                alpha = 0.8 - ( ((time) / 1000) / 5 * 0.8 );
+            } else {
+                alpha = 0;
+            }
+
+            jaws.context.save();
+            jaws.context.fillStyle = 'rgba(0,0,20,' + alpha + ')';
+            jaws.context.fillRect(0, 0, jaws.canvas.width, jaws.canvas.height);
+            jaws.context.restore();
         }
     };
 
@@ -166,5 +287,11 @@ jaws.onload = function () {
         'map.json',
         'tiles.png'
     ]);
-    jaws.start(Game);
+
+    var font = new Font();
+    font.onload = function () {
+        jaws.start(Setup);
+    };
+    font.fontFamily = 'font04b03';
+    font.src = '04B_03__.TTF';
 };
