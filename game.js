@@ -9,10 +9,10 @@ var Setup = function () {
 };
 
 var Game = function () {
-
     var player, walk, map, viewport, objects, bushes, time, sleeping, dead,
         death_reason, door, days, message_text, message_time, inventory,
-        items, item_sheet, item_images, item_names, inventory_sprites, fish_limit;
+        items, item_sheet, item_images, item_names, inventory_sprites, fish_limit,
+        won, win_sprite;
 
     function Player(options) {
         jaws.Sprite.call(this, options);
@@ -83,13 +83,13 @@ var Game = function () {
     Bush.prototype.interact = function () {
         if (this.berries) {
             player.eat(1);
+            this.takeBerry(1);
             message("Mmm berries");
             jaws.assets.get(afile('eat')).play();
-            this.takeBerry();
         }
     };
-    Bush.prototype.takeBerry = function () {
-        this.berries -= 1;
+    Bush.prototype.takeBerry = function (n) {
+        this.berries -= n;
         this.setImage(this.sheet.frames[5 - this.berries]);
     };
     Bush.prototype.sheet = new jaws.SpriteSheet({
@@ -198,7 +198,7 @@ var Game = function () {
             if (player.hunger > 0) {
                 message('Too hungry to row...');
             } else {
-                // WIN!
+                win();
             }
         }
     };
@@ -336,6 +336,21 @@ var Game = function () {
         death_reason = reason;
     }
 
+    function win() {
+        won = true;
+        var win_sheet = new jaws.SpriteSheet({
+            image: 'win.png',
+            frame_size: [48, 24],
+        });
+        win_sprite = new jaws.Sprite({ x: 100, y: 100, anchor: 'center' });
+        if (inventory.treasure) {
+            win_sprite.setImage(win_sheet.frames[1]);
+        } else {
+            win_sprite.setImage(win_sheet.frames[0]);
+        }
+        console.log(win_sprite);
+    }
+
     function get(item_name) {
         inventory[item_name] = true;
         inventory_sprites[item_name].setImage(item_images[item_name]);
@@ -435,12 +450,10 @@ var Game = function () {
                 days++;
                 newDay();
             }
-
-        } else if (dead) {
+        } else if (dead || won) {
             if (jaws.pressedWithoutRepeat('r')) {
                 jaws.switchGameState(Game);
             }
-
         } else {
             player.walking = false;
             if (jaws.pressed('left'))  { player.move(-1, 0); }
@@ -455,7 +468,7 @@ var Game = function () {
             message_time -= jaws.game_loop.tick_duration;
             if (message_time < 0) { message_time = 0; }
             if (time <= 0) {
-                if (nextTo(player, door, 1)) {
+                if (player.hunger <= 0 && nextTo(player, door, 1)) {
                     sleep();
                 } else {
                     if (player.hunger > 0) {
@@ -481,8 +494,22 @@ var Game = function () {
             jaws.context.fillStyle = 'rgba(0,0,20,1)';
             jaws.context.fillRect(0, 0, jaws.canvas.width, jaws.canvas.height);
             jaws.context.restore();
-            write(death_reason + "\nSurvived " + days +
-                  " days.\npress R to restart", 20, 10);
+            var days_text = days > 1 ? 'days' : 'day';
+            write(death_reason + "\n\nSurvived " + days +
+                  " " + days_text + ".\npress R to restart", 20, 30);
+        } else if (won) {
+            jaws.context.save();
+            jaws.context.fillStyle = '#67a6e7';
+            jaws.context.fillRect(0, 0, jaws.canvas.width, jaws.canvas.height);
+            jaws.context.restore();
+            var treasure_text = "";
+            if (inventory.treasure) {
+                "You also found the buried treasure. Sweet!\n"
+            }
+            var days_text = days > 1 ? 'days' : 'day';
+            write("You're on your way home. Hooray!\n" + treasure_text + "\nSurvived " + (days + 1) +
+                  " " + days_text + ".\npress R to restart", 20, 30);
+            win_sprite.draw();
         } else {
             player.setImage(player.anim.frames[0]);
             if (player.walking) {
@@ -555,6 +582,7 @@ jaws.onload = function () {
         'items.png',
         'hole.png',
         'boat.png',
+        'win.png',
         afile('hit'),
         afile('eat'),
         afile('fish'),
