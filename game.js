@@ -1,13 +1,48 @@
 var fps = 30;
 
+function write(text, x, y) {
+    jaws.context.save();
+    jaws.context.fillStyle = 'white';
+    jaws.context.textBaseline = 'top';
+    jaws.context.font = '8px font04b03';
+    jaws.context.shadowColor = 'black';
+    jaws.context.shadowOffsetX = 4;
+    jaws.context.shadowOffsetY = 4;
+
+    var lines = text.toString().split("\n");
+    var y_offset = 0;
+    lines.forEach(function (line) {
+        jaws.context.fillText(line, x, y + y_offset);
+        y_offset += 10;
+    });
+    jaws.context.restore();
+}
+
+
 var Setup = function () {
     this.setup = function () {
         jaws.width = jaws.canvas.width / 4;
         jaws.height = jaws.canvas.height / 4;
         jaws.context.scale(4, 4);
         jaws.useCrispScaling();
-        jaws.switchGameState(Game, { fps: fps });
+
+        jaws.context.save();
+        jaws.context.fillStyle = 'rgb(0,0,20)';
+        jaws.context.fillRect(0, 0, jaws.canvas.width, jaws.canvas.height);
+
+        jaws.context.fillStyle = 'white';
+        jaws.context.textBaseline = 'top';
+        jaws.context.font = '16px font04b03';
+        jaws.context.fillText("10s Castaway", 40, 40);
+        jaws.context.restore();
+
+        write("Arrows to move\nZ for action\n\nPress Z to begin", 60, 70);
     };
+    this.update = function () {
+        if (jaws.pressedWithoutRepeat('z')) {
+            jaws.switchGameState(Game, { fps: fps });
+        }
+    }
 };
 
 var Game = function () {
@@ -347,10 +382,12 @@ var Game = function () {
     function die(reason) {
         dead = true;
         death_reason = reason;
+        jaws.assets.get(afile('death')).play();
     }
 
     function win() {
         won = true;
+        jaws.assets.get(afile('win')).play();
         var win_sheet = new jaws.SpriteSheet({
             image: 'win.png',
             frame_size: [48, 24],
@@ -372,24 +409,6 @@ var Game = function () {
     function unget(item_name) {
         inventory[item_name] = false;
         inventory_sprites[item_name].setImage(item_images.mystery);
-    }
-
-    function write(text, x, y) {
-        jaws.context.save();
-        jaws.context.fillStyle = 'white';
-        jaws.context.textBaseline = 'top';
-        jaws.context.font = '8px font04b03';
-        jaws.context.shadowColor = 'black';
-        jaws.context.shadowOffsetX = 4;
-        jaws.context.shadowOffsetY = 4;
-
-        var lines = text.toString().split("\n");
-        var y_offset = 0;
-        lines.forEach(function (line) {
-            jaws.context.fillText(line, x, y + y_offset);
-            y_offset += 10;
-        });
-        jaws.context.restore();
     }
 
     function message(text) {
@@ -475,7 +494,7 @@ var Game = function () {
             if (jaws.pressed('right')) { player.move(d, 0); }
             if (jaws.pressed('up'))    { player.move(0, -d); }
             if (jaws.pressed('down'))  { player.move(0, d); }
-            if (jaws.pressedWithoutRepeat('z') || jaws.pressedWithoutRepeat('x')) {
+            if (jaws.pressedWithoutRepeat('z')) {
                 player.interact();
             }
 
@@ -571,7 +590,7 @@ var Game = function () {
                 }
             }
             if (message_time) {
-                write(message_text, 20, 140);
+                write(message_text, 20, 136);
             }
 
         }
@@ -605,6 +624,8 @@ jaws.onload = function () {
         afile('eat'),
         afile('fish'),
         afile('collect'),
+        afile('death'),
+        afile('win'),
     ]);
 
     var font = new Font();
