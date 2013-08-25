@@ -147,10 +147,59 @@ var Game = function () {
     });
 
     Hole.prototype.interact = function () {
-        if (!this.dug && inventory.shovel) {
+        if (this.dug) {
+            return;
+        }
+        if (inventory.shovel) {
             this.dug = true;
             this.setImage(this.sheet.frames[1]);
             get('treasure');
+        } else {
+            message('This spot looks suspicious...');
+        }
+    };
+
+    function Boat(options) {
+        jaws.Sprite.call(this, options);
+        this.setImage(this.sheet.frames[0]);
+        this.blocking = true;
+        this.holes = 3;
+    }
+    inherits(Boat, jaws.Sprite);
+
+    Boat.prototype.sheet = new jaws.SpriteSheet({
+        image: 'boat.png',
+        frame_size: [24, 16],
+    });
+
+    Boat.prototype.interact = function () {
+        if (this.holes) {
+            if (!inventory.wood && !inventory.hammer) {
+                message('Maybe a little wood could fix it...');
+                return
+            }
+            if (!inventory.wood) {
+                message('Need more wood!');
+                return
+            }
+            if (inventory.wood && !inventory.hammer) {
+                message('You need a tool to fix this...');
+                return;
+            }
+            this.holes--;
+            unget('wood');
+            if (this.holes) {
+                message('You fixed a hole in the boat!');
+            } else {
+                message('There! Good as new!');
+            }
+            jaws.assets.get(afile('hit')).play();
+        } else {
+            if (player.hunger > 0) {
+                message('Too hungry to row...');
+            } else {
+                // WIN!
+            }
         }
     };
 
@@ -168,8 +217,10 @@ var Game = function () {
     };
 
     Item.prototype.collect = function () {
-        this.collected = true;
-        get(this.type);
+        if (!this.collected) {
+            this.collected = true;
+            get(this.type);
+        }
     };
 
     function tiledSpawnObjects(data) {
@@ -188,6 +239,10 @@ var Game = function () {
             }
             if (object.type == 'hole') {
                 var object = new Hole({ x: object.x, y: object.y });
+            }
+            if (object.type == 'boat') {
+                var object = new Boat({ x: object.x, y: object.y, type: object.name });
+                items.push(object);
             }
             if (object.type == 'item') {
                 var object = new Item({ x: object.x, y: object.y, type: object.name });
@@ -229,16 +284,16 @@ var Game = function () {
 
     function goFish(tiles) {
         if (inventory.rod) {
-            if (Math.random() < 0.75) {
+            if (Math.random() < 0.5) {
                 message("You almost had one...");
                 return;
             }
 
-            var fished = tiles.some(function (tile) { return tile.fished; });
-            if (fished) {
-                message("The fish aren't biting...");
-                return;
-            }
+            // var fished = tiles.some(function (tile) { return tile.fished; });
+            // if (fished) {
+            //     message("The fish aren't biting...");
+            //     return;
+            // }
 
             if (fish_limit <= 0) {
                 message("I think that's enough fish for today.");
@@ -261,8 +316,8 @@ var Game = function () {
 
         sleeping = false;
         time = 10 * 1000;
-        player.x = 100;
-        player.y = 75;
+        player.x = door.x;
+        player.y = door.y;
         player.hunger += 10;
         fish_limit = 3;
 
@@ -286,6 +341,10 @@ var Game = function () {
         inventory_sprites[item_name].setImage(item_images[item_name]);
         message(item_messages[item_name]);
         jaws.assets.get(afile('collect')).play();
+    }
+    function unget(item_name) {
+        inventory[item_name] = false;
+        inventory_sprites[item_name].setImage(item_images.mystery);
     }
 
     function write(text, x, y) {
@@ -359,7 +418,7 @@ var Game = function () {
             frame_duration: 60
         });
 
-        player = new Player({ x: 100, y: 75, width: 4, height: 4 });
+        player = new Player({ x: door.x, y: door.y });
         player.anim = walk;
 
         viewport = new jaws.Viewport({ max_x: map.width, max_y: map.height });
@@ -473,9 +532,14 @@ var Game = function () {
 
         }
 
+        jaws.context.save();
+        jaws.context.shadowColor = 'black';
+        jaws.context.shadowOffsetX = 4;
+        jaws.context.shadowOffsetY = 4;
         for (i in inventory_sprites) {
             inventory_sprites[i].draw();
         }
+        jaws.context.restore();
     };
 
 };
@@ -490,6 +554,7 @@ jaws.onload = function () {
         'tiles.png',
         'items.png',
         'hole.png',
+        'boat.png',
         afile('hit'),
         afile('eat'),
         afile('fish'),
