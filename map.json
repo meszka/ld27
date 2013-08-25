@@ -126,6 +126,62 @@
                  "width":0,
                  "x":168,
                  "y":160
+                }, 
+                {
+                 "gid":61,
+                 "height":0,
+                 "name":"tree",
+                 "properties":
+                    {
+
+                    },
+                 "type":"tree",
+                 "visible":true,
+                 "width":0,
+                 "x":184,
+                 "y":128
+                }, 
+                {
+                 "gid":61,
+                 "height":0,
+                 "name":"tree",
+                 "properties":
+                    {
+
+                    },
+                 "type":"tree",
+                 "visible":true,
+                 "width":0,
+                 "x":192,
+                 "y":128
+                }, 
+                {
+                 "gid":61,
+                 "height":0,
+                 "name":"tree",
+                 "properties":
+                    {
+
+                    },
+                 "type":"tree",
+                 "visible":true,
+                 "width":0,
+                 "x":192,
+                 "y":120
+                }, 
+                {
+                 "gid":61,
+                 "height":0,
+                 "name":"tree",
+                 "properties":
+                    {
+
+                    },
+                 "type":"tree",
+                 "visible":true,
+                 "width":0,
+                 "x":128,
+                 "y":152
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -293,6 +349,21 @@
             },
          "spacing":0,
          "tileheight":8,
+         "tilewidth":8
+        }, 
+        {
+         "firstgid":61,
+         "image":"tree.png",
+         "imageheight":16,
+         "imagewidth":8,
+         "margin":0,
+         "name":"tree",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":16,
          "tilewidth":8
         }],
  "tilewidth":8,

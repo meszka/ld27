@@ -25,18 +25,19 @@ var Game = function () {
         this.y += y;
         this.walking = true;
         tiles_touched = map.atRect(this.rect());
+        var blocked = false
         if (isBlocking(tiles_touched)) {
-            this.x -= x;
-            this.y -= y;
+            blocked = true;
         }
         var object_collisions = jaws.collideOneWithMany(this, objects);
         var that = this;
-        object_collisions.forEach(function (object) {
-            if (object.blocking) {
-                that.x -= x;
-                that.y -= y;
-            }
+        var blocked = object_collisions.some(function (object) {
+            return object.blocking;
         });
+        if (blocked) {
+            this.x -= x;
+            this.y -= y;
+        }
     };
 
     Player.prototype.eat = function (amount) {
@@ -47,6 +48,7 @@ var Game = function () {
         var that = this;
         objects.forEach(function (object) {
             if (nextTo(that, object, 1)) {
+                console.log('next to', object);
                 if (typeof object.interact === 'function') {
                     object.interact();
                 }
@@ -94,6 +96,21 @@ var Game = function () {
         }
     };
 
+    function Tree(options) {
+        jaws.Sprite.call(this, options);
+        this.setImage('tree.png');
+        console.log(this.rect());
+        this.blocking = true;
+    }
+    inherits(Tree, jaws.Sprite);
+
+    Tree.prototype.interact = function () {
+        if (!this.stump) {
+            this.stump = true;
+            this.setImage('stump.png');
+        }
+    };
+
     function tiledSpawnObjects(data) {
         var objects = new jaws.SpriteList();
         data.layers[1].objects.forEach(function (object) {
@@ -105,6 +122,9 @@ var Game = function () {
                 var object = new Door({ x: object.x, y: object.y });
                 door = object;
             }
+            if (object.type == 'tree') {
+                var object = new Tree({ x: object.x, y: object.y });
+            }
             object.setAnchor('bottom_left');
             objects.push(object);
         });
@@ -112,7 +132,8 @@ var Game = function () {
     }
 
     function nextTo(obj1, obj2, distance) {
-        var larger_rect = obj1.rect();
+        var rect = obj1.rect();
+        var larger_rect = new jaws.Rect(rect.x, rect.y, rect.width, rect.height);
         larger_rect.move(-distance, -distance);
         larger_rect.resize(distance * 2, distance * 2);
         return jaws.collideRects(larger_rect, obj2.rect());
@@ -215,7 +236,7 @@ var Game = function () {
             message_time -= jaws.game_loop.tick_duration;
             if (message_time < 0) { message_time = 0; }
             if (time <= 0) {
-                if (nextTo(player, door)) {
+                if (nextTo(player, door, 1)) {
                     sleep();
                 } else {
                     die('Killed by the creatures of the night.');
@@ -248,7 +269,11 @@ var Game = function () {
             viewport.apply(function () {
                 map.tiles.draw();
                 objects.draw();
+                // objects.forEach(function (object) {
+                //    object.rect().draw(); 
+                // });
                 player.draw();
+                // player.rect().draw();
             });
 
             jaws.context.fillStyle = 'rgb(255,255,255)';
@@ -284,6 +309,8 @@ jaws.onload = function () {
     jaws.assets.add([
         'front_walk.png',
         'berry_bush.png',
+        'tree.png',
+        'stump.png',
         'map.json',
         'tiles.png'
     ]);
